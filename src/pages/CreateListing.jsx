@@ -1,7 +1,11 @@
 import { type } from '@testing-library/user-event/dist/type'
 import React from 'react'
 import { useState } from 'react'
+import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
 export default function CreateListing() {
+    const [geolocationEnabled,setGeolocationEnabled]=useState(true);
+    const[loading,setLoading]=useState(false)
     const [formData,setFormData]=useState({
         type:"rent",
         name:"",
@@ -33,13 +37,60 @@ export default function CreateListing() {
         longitude,
         images,
     }=formData
-    function onChange(){
+    function onChange(e){
+        let boolean=null;
+        if(e.target.value==="true"){
+            boolean=true
+        }
+        if(e.target.value==="false"){
+            boolean=false
+        }
+        {/*Files*/}
+        if(e.target.files){
+            setFormData((prevState)=>({
+                ...prevState,
+                images:e.target.files,
+            }))
+        }
+        {/*text/boolean/number */}
+        if(!e.target.files){
+            setFormData((prevState)=>({
+                ...prevState,
+                /*ternary operator to check if the boolean here or consider the other option */
+                [e.target.id]: boolean ?? e.target.value,
+            }))
+        }
+ }
 
+ async function onSubmit(e){
+    e.preventDefault();
+    setLoading(true);
+    if(discountedPrice>=regularPrice){
+        setLoading(false)
+        toast.error("Discounted price need to be less than regular price")
+        return;
     }
+    if(images.length>6){
+        setLoading(false)
+        toast.error("maximum 6 images are allowed")
+        return;      
+    }
+    let geolocation={}
+    let location
+    if (geolocationEnabled){
+        const response = await fetch(`http://ip-api.com/json/${address}`)
+        const data=await response.json()
+        console.log(data);
+        
+    }
+ }
+ if(loading){
+    return <Spinner/>
+ }
   return (
     <main className='max-w-md px-2 mx-auto '>
         <h1 className='text-3xl text-center mt-6 font-bold' >Create a listing</h1>
-        <form >
+        <form onSubmit={onSubmit}>
             
             
             <p className='text-lg mt-6 font-semibold'>Sell/Rent</p>
@@ -203,7 +254,45 @@ export default function CreateListing() {
             duration-150 ease-in-out focus:text-gray-700 focus:bg-white 
             focus:border-slate-600 mb-6"/>
             
-            
+            {!geolocationEnabled &&(
+                <div className="flex space-x-6 justify-start mb-6">
+                    <div className="">
+                        <p className="text-lg font-semibold">Latitude</p>                                                    
+                        <input 
+                        type="number" 
+                        id="latitude" 
+                        value={latitude} 
+                        onChange={onChange}
+                        required
+                        min="-90"
+                        max="90"
+                        className="w-full px-4 py-2 text-xl text-gray-700 
+                            bg-white border border-gray-300 rounded transition
+                             duration-150 ease-in-out focus:text-gray-700 focus:bg-white
+                             focus:border-slate-600 text-center" 
+                        />
+                    </div>
+                    <div className="">
+                        <p className="text-lg font-semibold">Longitude</p>                                                    
+                        <input 
+                        type="number" 
+                        id="longitude" 
+                        value={longitude} 
+                        onChange={onChange}
+                        required
+                        min="-180"
+                        max="180"
+                        className="w-full px-4 py-2 text-xl text-gray-700 
+                            bg-white border border-gray-300 rounded transition
+                             duration-150 ease-in-out focus:text-gray-700 focus:bg-white
+                             focus:border-slate-600 text-center" 
+                        />
+                    </div>
+                </div>
+            )}
+
+
+{/*Property description*/}
             <p className='text-lg font-semibold'> 
                 Description 
             </p>
@@ -221,8 +310,8 @@ export default function CreateListing() {
             
             
 {/*Offer*/}             
-            <p className='text-lg mt-6 font-semibold'>
-                Offre
+            <p className='text-lg font-semibold'>
+                Offer
             </p>
             <div className="flex mb-6">
                 <button 
