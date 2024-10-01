@@ -7,26 +7,28 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from 'react-router';
 export default function OAuth() {
   const navigate= useNavigate()
-  async function onGoogleClick(){
+  async function onGoogleClick() {
     try {
-      const  auth = getAuth()
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth,provider)
-      const user = result.user
-      
-      const docRef = doc(db,"users",user.uid)
-      const docSnap = await getDoc(docRef)
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-      if(!docSnap.exists()){
-        await setDoc(docRef,{
-          fullName: user.displayName,
-          email:user.email,
-          timeStamp:serverTimestamp(),
-        })
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          name: user.displayName,
+          email: user.email,
+          timestamp: serverTimestamp(),
+        });
       }
-      navigate("/")
+
+      navigate("/");
     } catch (error) {
-      toast.error("Could not authorize with Google")
+      toast.error("Could not authorize with Google");
     }
   }
   return (

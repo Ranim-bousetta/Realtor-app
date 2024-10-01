@@ -12,13 +12,8 @@ export default function ForgotPassword() {
     e.preventDefault()
     try {
       const auth = getAuth()
-      await sendPasswordResetEmail(auth,email)
-      const userCredential=sendPasswordResetEmail(auth,email)
-      if(userCredential.user){
+      await sendPasswordResetEmail(auth,email);
         toast.success("Email was sent")
-      }else{
-        toast.error("No user with this Email")
-      }
     } catch (error) {
       toast.error("Could not send reset Password")
     }
