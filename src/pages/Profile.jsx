@@ -46,7 +46,7 @@ export default function Profile() {
       }
       toast.success('Profile details updated')
     } catch (error) {
-      toast.error("Coud not update Profile details")
+      toast.error("Could not update Profile details")
     }
   }
   useEffect(()=>{
@@ -59,12 +59,12 @@ export default function Profile() {
   const querySnap = await getDocs(q);
   let listings = [];
   querySnap.forEach((doc)=>{
-    return listings. push({
-      is:doc.id,
+    return listings.push({
+      id:doc.id,
       data:doc.data(),
     });
   });
-  setListings(listings)
+  setListings(listings);
   setLoading(false);
    }
     fetchUserListing();
@@ -145,6 +145,7 @@ export default function Profile() {
             </h2>
             <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {listings.map((listing) => (
+                <React.Fragment key={listing.id}>
                 <ListingItem
                   key={listing.id}
                   id={listing.id}
@@ -152,6 +153,7 @@ export default function Profile() {
                   onDelete={() => onDelete(listing.id)}
                   onEdit={() => onEdit(listing.id)}
                 />
+                </React.Fragment>
               ))}
             </ul>
           </>
