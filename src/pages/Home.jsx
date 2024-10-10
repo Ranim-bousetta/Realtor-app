@@ -107,6 +107,7 @@ export default function Home() {
    }, []);
 
   return (
+    <>
     <div>
       <Slider />
       <div className="max-w-6xl mx-auto pt-4 space-y-6">
@@ -169,6 +170,7 @@ export default function Home() {
         )}
       </div>
     </div>
+    </>
   )
 }
 
